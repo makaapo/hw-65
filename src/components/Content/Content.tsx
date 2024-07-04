@@ -2,27 +2,40 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {ContentType} from '../types';
 import axiosApi from '../../axiosApi';
 import {enqueueSnackbar} from 'notistack';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
+
+interface Props {
+  pathname: string;
+}
 
 const Content: React.FC = () => {
   const {pageName} = useParams();
   const [content, setContent] = useState<ContentType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const location:Props = useLocation();
+
 
   const fetchContent = useCallback(async () => {
     try {
       setIsLoading(true);
 
-      const response = await axiosApi.get<ContentType | null>(`/pages/${pageName}.json`);
-      if (response.data) {
-        setContent(response.data);
+      if (location.pathname === '/') {
+        const response = await axiosApi.get<ContentType | null>('/pages/home.json');
+        if (response.data) {
+          setContent(response.data);
+        }
+      } else {
+        const response = await axiosApi.get<ContentType | null>(`/pages/${pageName}.json`);
+        if (response.data) {
+          setContent(response.data);
+        }
       }
     } catch (error) {
       enqueueSnackbar('Error fetching content', {variant: 'error'});
     } finally {
       setIsLoading(false);
     }
-  }, [pageName]);
+  }, [pageName, location.pathname]);
 
   useEffect(() => {
     void fetchContent();
