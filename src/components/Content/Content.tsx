@@ -2,17 +2,14 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {ContentType} from '../types';
 import axiosApi from '../../axiosApi';
 import {enqueueSnackbar} from 'notistack';
-import {useLocation, useParams} from 'react-router-dom';
+import {Location, useLocation, useParams} from 'react-router-dom';
 
-interface Props {
-  pathname: string;
-}
 
 const Content: React.FC = () => {
   const {pageName} = useParams();
   const [content, setContent] = useState<ContentType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const location:Props = useLocation();
+  const location: Location = useLocation();
 
 
   const fetchContent = useCallback(async () => {
